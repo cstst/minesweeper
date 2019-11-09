@@ -78,15 +78,10 @@ export class BoardService {
       const [ neighborRow, neighborColumn ] = neighbor;
       const numColumn = parseInt(neighborColumn, 10);
 
-      if ( numColumn < 1 || numColumn > board[row].length || !board[neighborRow]) {
-        return false;
-      }
-
-      return true;
+      return (numColumn > 0 && numColumn <= board[row].length && board[neighborRow]);
     });
 
     return neighbors;
-
   }
 
   private generateBlankBoard(boardWidth: number): Board {
