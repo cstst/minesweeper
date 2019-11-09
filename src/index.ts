@@ -2,6 +2,8 @@ import { BoardService } from "./services/board.service";
 
 const boardService = new BoardService();
 
-const board = boardService.generateBoard(2, 1);
+boardService.createBoard();
+
+const board = boardService.getBoard();
 
 console.warn(board);
