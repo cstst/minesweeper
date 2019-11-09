@@ -1,0 +1,27 @@
+{
+  "name": "minesweeper",
+  "version": "1.0.0",
+  "description": "Minesweeper console game",
+  "main": "index.js",
+  "scripts": {
+    "nyc": "nyc --reporter=text --reporter=lcov --check-coverage --lines 80 --functions 80 --branches 80 node config/jasmine.runner.js",
+    "clean:tests": "rm -rf ./.nyc_output && rm -rf ./coverage && rm -rf ./compiled_tests",
+    "build:tests": "npm run clean:tests && tsc --project ./config/tsconfig.test.json",
+    "test": "npm run clean:tests && npm run build:tests && npm run lint && npm run nyc",
+    "clean": "rm -rf ./dist",
+    "lint": "tslint --project ./tslint.json --format stylish",
+    "build": "tsc --project ./config/tsconfig.build.json",
+    "start": "npm run clean && npm run lint && npm run build && node ./dist"
+  },
+  "author": "Derek Larson",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^12.12.7",
+    "jasmine": "^3.5.0",
+    "jasmine-spec-reporter": "^4.2.1",
+    "nyc": "^14.1.1",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.2"
+  },
+  "dependencies": {}
+}

@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "../compiled_tests",
+  },
+  "include": [
+    "../src/**/*.spec.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

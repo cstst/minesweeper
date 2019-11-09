@@ -1,0 +1,9 @@
+
+**/node_modules
+**/dist/*
+**/coverage/*
+**/.nyc_output/*
+**/compiled_tests/*
+.idea/*
+*.iml
+/.vs/*
