@@ -1,12 +1,7 @@
 import { getRandomInt } from "../helpers/random.helper";
 
-type Mine = "*";
-type Clear = " ";
-type Space = Mine | Clear;
-type Row = Space[];
-
 export interface Board {
-  [key: string]: Row;
+  [key: string]: string[];
 }
 
 export class BoardService {
@@ -20,7 +15,6 @@ export class BoardService {
     const blankBoard = this.generateBlankBoard(boardWidth);
     const minedSpaces = this.generateMinePlacement(boardWidth, mineCount);
     const minedBoard = this.mineBoard(blankBoard, minedSpaces);
-
     this.board = minedBoard;
   }
 
@@ -28,15 +22,71 @@ export class BoardService {
     return this.board;
   }
 
+  private addNeighboors(board: Board, neighbors: string[]): Board {
+    return neighbors.reduce((acc, val) => {
+      const [ row, column ] = val;
+      const columnInd = parseInt(column, 10) - 1;
+      const space = acc[row][columnInd];
+      const rowCopy = [ ...acc[row] ];
+
+      if (space === " ") {
+        rowCopy[columnInd] = "1";
+      } else if (!isNaN(parseInt(space, 10))) {
+        const newCount = parseInt(space, 10) + 1;
+        rowCopy[columnInd] = newCount.toString();
+      }
+
+      return { ...acc, [row]: rowCopy };
+
+    }, { ...board });
+  }
+
   private mineBoard(board: Board, minedSpaces: string[]): Board {
     return minedSpaces.reduce((acc, val) => {
       const [ row, column ] = val;
+      const columnInd = parseInt(column, 10) - 1;
 
-      const minedRow = [ ...acc[row] ];
-      minedRow[parseInt(column, 10) - 1] = "*";
+      const neighbors = this.getNeighbors(acc, row, column);
 
-      return { ...acc, [row]: minedRow };
+      const accWithNeighbors = this.addNeighboors(acc, neighbors);
+
+      const rowCopy = [ ...accWithNeighbors[row] ];
+      rowCopy[columnInd] = "*";
+
+      return { ...accWithNeighbors, [row]: rowCopy };
     }, { ...board });
+  }
+
+  private getNeighbors(board: Board, row: string, column: string): string[] {
+    const rowBefore =  String.fromCharCode(row.charCodeAt(0) - 1);
+    const rowAfter =  String.fromCharCode(row.charCodeAt(0) + 1);
+    const columnBefore = parseInt(column, 10) - 1;
+    const columnAfter = parseInt(column, 10) +  1;
+
+    const potentialNeighbors = [
+      rowBefore + columnBefore,
+      rowBefore + column,
+      rowBefore + columnAfter,
+      row + columnBefore,
+      row + columnAfter,
+      rowAfter + columnBefore,
+      rowAfter + column,
+      rowAfter + columnAfter,
+    ];
+
+    const neighbors = potentialNeighbors.filter((neighbor) => {
+      const [ neighborRow, neighborColumn ] = neighbor;
+      const numColumn = parseInt(neighborColumn, 10);
+
+      if ( numColumn < 1 || numColumn > board[row].length || !board[neighborRow]) {
+        return false;
+      }
+
+      return true;
+    });
+
+    return neighbors;
+
   }
 
   private generateBlankBoard(boardWidth: number): Board {
@@ -51,7 +101,7 @@ export class BoardService {
 
     for (let i = 1; i <= boardWidth; i++) {
       const letter = String.fromCharCode(64 + i);
-      const blankRow: Row = Array.from({ length : boardWidth}).map(() => " ");
+      const blankRow = Array.from({ length : boardWidth}).map(() => " ");
       board[letter] = blankRow;
     }
 
