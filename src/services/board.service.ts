@@ -23,6 +23,7 @@ export class BoardService {
   }
 
   private addNeighboors(board: Board, neighbors: string[]): Board {
+    // test
     return neighbors.reduce((acc, val) => {
       const [ row, column ] = val;
       const columnInd = parseInt(column, 10) - 1;
